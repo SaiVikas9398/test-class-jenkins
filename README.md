@@ -22,37 +22,38 @@ converter-hub/
     └── app.js
 ```
 
-## Running Locally
-```bash
-npm install
-npm start
-# Visit http://localhost:3000
-```
-
----
-
 ## Deploying on EC2 (matches what we covered in class)
 
 ### 1. Launch & prepare the instance
 ```bash
 # Ubuntu 22.04, t3.micro is enough
 sudo apt update
-sudo apt install -y nodejs npm build-essential python3
-node -v   # confirm Node is installed
+sudo apt install -y nginx
+sudo apt install curl -y
+sudo curl -sL https://deb.nodesource.com/setup_24.x -o /tmp/nodesource_setup.sh
+sudo bash /tmp/nodesource_setup.sh -
+sudo apt install nodejs -y
+sudo npm install -g pm2 -y
+node -v
+pm2 -v
+sudo apt install -y build-essential python3 make g++
+
 ```
 `build-essential` + `python3` are needed because `better-sqlite3` compiles a small native module on install.
 
 ### 2. Get the app onto the instance
 ```bash
-# via git clone, or scp the project folder up, then:
-cd converter-hub
-npm install
+sudo mkdir -p /var/www/converter-hub
+sudo chown -R ubuntu:ubuntu /var/www/converter-hub
+cd /var/www/converter-hub
+git clone https://github.com/sujitbaram-class/test-class.git .
+npm i -f
+
 ```
 
 ### 3. Run it persistently with PM2
 Running `node server.js` directly dies the moment you close your SSH session. PM2 keeps it running, restarts it on crash, and can restart it on instance reboot.
 ```bash
-sudo npm install -g pm2
 pm2 start server.js --name converter-hub
 pm2 save
 pm2 startup            # follow the printed command to enable on-boot startup
@@ -64,7 +65,7 @@ The app listens on `localhost:3000` — it should never face the internet direct
 ```nginx
 server {
     listen 80;
-    server_name converterhub.example.com;
+    server_name _;
 
     location / {
         proxy_pass http://localhost:3000;
@@ -79,12 +80,13 @@ server {
 }
 ```
 ```bash
-sudo apt install -y nginx
 sudo nano /etc/nginx/sites-available/converter-hub   # paste the config above
 sudo ln -s /etc/nginx/sites-available/converter-hub /etc/nginx/sites-enabled/
 sudo nginx -t          # check syntax
 sudo systemctl reload nginx
 ```
+
+
 
 ### 5. Point your domain at the instance
 - Route 53 → create an **A record** for your domain pointing at the instance's **Elastic IP** (allocate + attach one first, so the IP survives restarts)
