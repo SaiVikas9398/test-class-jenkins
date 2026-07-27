@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Converter Hub — Precision Unit Conversion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="blueprint-bg" aria-hidden="true"></div>
+
+  <header class="panel-header">
+    <div class="header-inner">
+      <div class="plate">
+        <span class="plate-notch"></span>
+        <h1>CONVERTER <span>HUB</span></h1>
+        <p class="tagline">Precision conversion across 8 measurement instruments</p>
+      </div>
+      <div class="header-meta">
+        <div class="meta-block">
+          <span class="meta-label">STATUS</span>
+          <span class="meta-value" id="status-indicator">● ONLINE</span>
+        </div>
+        <div class="meta-block">
+          <span class="meta-label">ENGINE</span>
+          <span class="meta-value">NODE.JS / SQLITE</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="console">
+
+    <nav class="category-rail" id="category-rail" aria-label="Conversion category">
+      <!-- category toggle switches injected by app.js -->
+    </nav>
+
+    <section class="instrument" aria-label="Converter">
+
+      <div class="instrument-face">
+
+        <div class="dial-block" data-role="from">
+          <label class="dial-label" for="from-unit">FROM</label>
+          <select id="from-unit" class="dial-select"></select>
+          <input id="from-value" class="dial-input" type="number" inputmode="decimal" value="1" aria-label="Value to convert" />
+        </div>
+
+        <button id="swap-btn" class="swap-dial" title="Swap units" aria-label="Swap units">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M7 7h11l-3-3M17 17H6l3 3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <div class="dial-block" data-role="to">
+          <label class="dial-label" for="to-unit">TO</label>
+          <select id="to-unit" class="dial-select"></select>
+          <div class="lcd-readout" id="result-readout">
+            <span id="result-value">0</span>
+          </div>
+        </div>
+
+      </div>
+
+      <p class="instrument-note" id="conversion-note">Enter a value to see the live conversion.</p>
+
+    </section>
+
+    <section class="logbook" aria-label="Recent conversions">
+      <div class="logbook-head">
+        <h2>RECENT LOG</h2>
+        <span class="logbook-sub">last 15 conversions — read from SQLite</span>
+      </div>
+      <div class="logbook-tape" id="history-list">
+        <p class="logbook-empty">No conversions logged yet — try one above.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="panel-footer">
+    <p>Converter Hub — built for classroom deployment practice on a single EC2 instance.</p>
+    <p class="stack-note">Express + better-sqlite3 · deploy behind Nginx (reverse proxy) · run with PM2 · secure with Let's Encrypt</p>
+  </footer>
+
+<script src="app.js"></script>
+</body>
+</html>

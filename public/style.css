@@ -1,0 +1,325 @@
+/* ===========================================================
+   Converter Hub — "Instrument Panel" design system
+   Palette:
+     --blueprint-dark   #0F2138  deep blueprint navy (page bg)
+     --blueprint-mid    #17335198 panel bg
+     --blueprint-line   rgba(122,169,209,.16)  grid lines
+     --paper            #ECE6D6  warm drafting paper (light panels)
+     --ink              #142A42  text on paper
+     --amber            #E8A33D  brass instrument accent
+     --amber-dim        #B97C2E
+     --mist             #DCE8F2  text on dark
+   Type:
+     Display: 'Big Shoulders Display' (condensed industrial)
+     Body:    'IBM Plex Sans'
+     Mono:    'IBM Plex Mono' (readouts, log, data)
+   =========================================================== */
+
+:root {
+  --blueprint-dark: #0F2138;
+  --blueprint-mid: #17324f;
+  --blueprint-line: rgba(122, 169, 209, 0.16);
+  --paper: #ece6d6;
+  --ink: #142a42;
+  --amber: #e8a33d;
+  --amber-dim: #b97c2e;
+  --mist: #dce8f2;
+  --mist-dim: #9db3c7;
+}
+
+* { box-sizing: border-box; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--blueprint-dark);
+  color: var(--mist);
+  font-family: 'IBM Plex Sans', sans-serif;
+  min-height: 100vh;
+}
+
+.blueprint-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--blueprint-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--blueprint-line) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 40%, transparent 90%);
+}
+
+/* ---------- Header ---------- */
+.panel-header {
+  position: relative;
+  z-index: 1;
+  padding: 3rem 1.5rem 2rem;
+  border-bottom: 1px solid var(--blueprint-line);
+}
+.header-inner {
+  max-width: 980px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+.plate { position: relative; }
+.plate-notch {
+  display: block;
+  width: 46px;
+  height: 4px;
+  background: var(--amber);
+  margin-bottom: 0.9rem;
+  border-radius: 2px;
+}
+.plate h1 {
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.6rem, 6vw, 4.2rem);
+  letter-spacing: 0.02em;
+  margin: 0;
+  line-height: 0.95;
+  color: var(--mist);
+}
+.plate h1 span { color: var(--amber); }
+.tagline {
+  margin: 0.6rem 0 0;
+  color: var(--mist-dim);
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+}
+.header-meta {
+  display: flex;
+  gap: 1.8rem;
+}
+.meta-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-family: 'IBM Plex Mono', monospace;
+}
+.meta-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  color: var(--mist-dim);
+}
+.meta-value {
+  font-size: 0.85rem;
+  color: var(--amber);
+  letter-spacing: 0.03em;
+}
+#status-indicator { color: #6fcf97; }
+
+/* ---------- Console layout ---------- */
+.console {
+  position: relative;
+  z-index: 1;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* ---------- Category rail (toggle switches) ---------- */
+.category-rail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.cat-toggle {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  padding: 0.55rem 1rem;
+  background: var(--blueprint-mid);
+  border: 1px solid var(--blueprint-line);
+  color: var(--mist-dim);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.cat-toggle:hover { border-color: var(--amber-dim); color: var(--mist); }
+.cat-toggle.active {
+  background: var(--amber);
+  border-color: var(--amber);
+  color: var(--blueprint-dark);
+  font-weight: 600;
+}
+.cat-toggle:focus-visible, .dial-select:focus-visible, .dial-input:focus-visible,
+.swap-dial:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+}
+
+/* ---------- Instrument panel ---------- */
+.instrument {
+  background: var(--blueprint-mid);
+  border: 1px solid var(--blueprint-line);
+  border-radius: 18px;
+  padding: 2rem;
+}
+.instrument-face {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1.2rem;
+}
+@media (max-width: 700px) {
+  .instrument-face { grid-template-columns: 1fr; }
+  .swap-dial { justify-self: center; transform: rotate(90deg); }
+}
+
+.dial-block {
+  background: var(--paper);
+  border-radius: 12px;
+  padding: 1.1rem 1.2rem 1.3rem;
+  color: var(--ink);
+}
+.dial-label {
+  display: block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  color: var(--amber-dim);
+  margin-bottom: 0.5rem;
+}
+.dial-select {
+  width: 100%;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.55rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #cfc6ac;
+  background: #fbf9f2;
+  color: var(--ink);
+  margin-bottom: 0.7rem;
+}
+.dial-input {
+  width: 100%;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 1.5rem;
+  font-weight: 600;
+  padding: 0.5rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #cfc6ac;
+  background: #fbf9f2;
+  color: var(--ink);
+}
+
+.lcd-readout {
+  background: #0d1f14;
+  border: 1px solid #1f3a28;
+  border-radius: 8px;
+  padding: 0.7rem 0.8rem;
+  min-height: 3.1rem;
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+}
+.lcd-readout span {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--amber);
+  text-shadow: 0 0 10px rgba(232, 163, 61, 0.45);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.swap-dial {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--blueprint-dark);
+  border: 2px solid var(--amber);
+  color: var(--amber);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.swap-dial:hover { background: var(--amber); color: var(--blueprint-dark); transform: rotate(180deg); }
+
+.instrument-note {
+  margin: 1.3rem 0 0;
+  font-size: 0.85rem;
+  color: var(--mist-dim);
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+/* ---------- Logbook (history) ---------- */
+.logbook {
+  background: var(--blueprint-mid);
+  border: 1px solid var(--blueprint-line);
+  border-radius: 18px;
+  padding: 1.6rem 2rem 1.8rem;
+}
+.logbook-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+  margin-bottom: 0.9rem;
+  flex-wrap: wrap;
+}
+.logbook-head h2 {
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 0.04em;
+  margin: 0;
+  color: var(--mist);
+}
+.logbook-sub {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--mist-dim);
+}
+.logbook-tape {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-height: 280px;
+  overflow-y: auto;
+}
+.logbook-empty {
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--mist-dim);
+  font-size: 0.85rem;
+  margin: 0.4rem 0;
+}
+.log-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.82rem;
+  padding: 0.5rem 0.7rem;
+  background: rgba(220, 232, 242, 0.04);
+  border-left: 2px solid var(--amber-dim);
+  border-radius: 4px;
+  color: var(--mist);
+}
+.log-row .log-time { color: var(--mist-dim); white-space: nowrap; }
+
+/* ---------- Footer ---------- */
+.panel-footer {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 1.6rem 1.5rem 2.4rem;
+  color: var(--mist-dim);
+  font-size: 0.8rem;
+  border-top: 1px solid var(--blueprint-line);
+}
+.panel-footer p { margin: 0.25rem 0; }
+.stack-note { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; }

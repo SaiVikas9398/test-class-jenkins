@@ -1,0 +1,13 @@
+{
+  "name": "converter-hub",
+  "version": "1.0.0",
+  "description": "Converter Hub - a multi-category unit converter with Node.js backend and SQLite history log, built for classroom EC2 deployment practice.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.3.0",
+    "express": "^4.19.2"
+  }
+}
