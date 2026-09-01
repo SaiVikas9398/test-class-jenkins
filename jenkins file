@@ -16,3 +16,15 @@ pipeline {
 }
 
 #test Triger
+
+post {
+        success {
+            echo 'SUCCESS! The build finished with flying colors.'
+        }
+        failure {
+            echo 'FAILURE! Something went wrong in the build.'
+        }
+        always {
+            echo 'This runs no matter what happens, success or failure!'
+        }
+    }
