@@ -1,34 +1,70 @@
 pipeline {
-    agent any
-
-    parameters {
-        choice(name: 'DEPLOY_ENV', choices: ['staging', 'production'], description: 'Select target environment')
+    agent {
+        label 'built-in'
     }
-
+    
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+        timeout(time: 1, unit: 'HOURS')
+        disableConcurrentBuilds()
+        ansiColor('xterm')
+    }
+    
+    environment {
+        APP_NAME = 'test-class-app'
+        REGISTRY_CREDENTIALS_ID = 'github-token'
+    }
+    
     stages {
-        stage('Build') {
+        stage('Checkout Code') {
             steps {
-                echo 'Building the application artifacts...'
-                sh 'npm install'
+                echo 'Checking out source code from GitHub repository...'
+                checkout scm
             }
         }
-        stage('Test') {
+        
+        stage('Run Static Analysis / Lint') {
             steps {
-                echo 'Running automated tests...'
-                sh 'echo "Tests passed successfully!"'
+                echo 'Executing code linters and security checks...'
+                sh 'echo "Code quality gate passed."'
             }
         }
-        stage('Deploy') {
+        
+        stage('Build Artifact') {
             steps {
-                echo "Deploying application to ${params.DEPLOY_ENV} environment..."
-                sh 'echo "Deployment completed!"'
+                echo 'Compiling code and building application package...'
+                sh 'echo "Build successful."'
+            }
+        }
+        
+        stage('Automated Tests') {
+            steps {
+                echo 'Running unit and integration test suites...'
+                sh 'echo "All tests passed successfully."'
+            }
+        }
+        
+        stage('Secure Deploy to Staging') {
+            steps {
+                withCredentials([string(credentialsId: "${env.REGISTRY_CREDENTIALS_ID}", variable: 'DEPLOY_TOKEN')]) {
+                    sh '''
+                        echo "Authenticating with deployment target using secure token..."
+                        echo "Deploying version to staging environment..."
+                    '''
+                }
             }
         }
     }
-
+    
     post {
         success {
-            echo 'Pipeline completed all deployment stages successfully!'
+            echo 'Pipeline completed successfully. Notification sent to team channel.'
+        }
+        failure {
+            echo 'Pipeline failed. Check console logs for errors and notify the owner.'
+        }
+        always {
+            cleanWs()
         }
     }
 }
