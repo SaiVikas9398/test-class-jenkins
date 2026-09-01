@@ -1,0 +1,16 @@
+pipeline {
+    agent any
+    stages {
+        stage('Checkout Code') {
+            steps {
+                echo 'Successfully pulled code from GitHub via webhook!'
+            }
+        }
+        stage('Run a Build Step') {
+            steps {
+                sh 'echo "Running build commands on EC2 instance..."'
+                sh 'uname -a'
+            }
+        }
+    }
+}
