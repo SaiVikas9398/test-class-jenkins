@@ -7,7 +7,10 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10'))
         timeout(time: 1, unit: 'HOURS')
         disableConcurrentBuilds()
-        ansiColor('xterm')
+    }
+    
+    parameters {
+        choice(name: 'DEPLOY_ENV', choices: ['staging', 'production'], description: 'Select target environment')
     }
     
     environment {
@@ -44,12 +47,13 @@ pipeline {
             }
         }
         
-        stage('Secure Deploy to Staging') {
+        stage('Secure Deploy') {
             steps {
+                echo "Deploying to target environment: ${params.DEPLOY_ENV}"
                 withCredentials([string(credentialsId: "${env.REGISTRY_CREDENTIALS_ID}", variable: 'DEPLOY_TOKEN')]) {
                     sh '''
                         echo "Authenticating with deployment target using secure token..."
-                        echo "Deploying version to staging environment..."
+                        echo "Deploying version to ${params.DEPLOY_ENV} environment..."
                     '''
                 }
             }
